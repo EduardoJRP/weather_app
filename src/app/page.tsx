@@ -2,98 +2,65 @@
 
 import Navbar from '@/components/Navbar';
 import axios from 'axios';
+import { parseISO, format } from 'date-fns';
 import { useQuery } from 'react-query';
 
-// https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&appid=f03fa3d4826351611bcfc0c7d89013b3
-
-interface Weather {
-  id: number;
-  main: string;
-  description: string;
-  icon: string;
-}
-
-interface Minutely {
-  dt: number;
-  precipitation: number;
-}
-
-interface Hourly {
-  dt: number;
-  temp: number;
-  feels_like: number;
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  uvi: number;
-  clouds: number;
-  visibility: number;
-  wind_speed: number;
-  wind_deg: number;
-  wind_gust: number;
-  weather: Weather[];
-  pop: number;
-}
-
-interface Daily {
-  dt: number;
-  sunrise: number;
-  sunset: number;
-  moonrise: number;
-  moonset: number;
-  moon_phase: number;
-  summary: string;
-  temp: {
-    day: number;
-    min: number;
-    max: number;
-    night: number;
-    eve: number;
-    morn: number;
-  };
-  feels_like: {
-    day: number;
-    night: number;
-    eve: number;
-    morn: number;
-  };
-  pressure: number;
-  humidity: number;
-  dew_point: number;
-  wind_speed: number;
-  wind_deg: number;
-  wind_gust: number;
-  weather: Weather[];
-  clouds: number;
-  pop: number;
-  uvi: number;
-}
-
 interface WeatherData {
-  lat: number;
-  lon: number;
-  timezone: string;
-  timezone_offset: number;
-  current: {
-    dt: number;
+  cod: string;
+  message: number;
+  cnt: number;
+  list: WeatherItem[];
+  city: {
+    id: number;
+    name: string;
+    coord: {
+      lat: number;
+      lon: number;
+    };
+    country: string;
+    population: number;
+    timezone: number;
     sunrise: number;
     sunset: number;
+  };
+}
+
+interface WeatherItem {
+  dt: number;
+  main: {
     temp: number;
     feels_like: number;
+    temp_min: number;
+    temp_max: number;
     pressure: number;
+    sea_level: number;
+    grnd_level: number;
     humidity: number;
-    dew_point: number;
-    uvi: number;
-    clouds: number;
-    visibility: number;
-    wind_speed: number;
-    wind_deg: number;
-    wind_gust: number;
-    weather: Weather[];
+    temp_kf: number;
   };
-  minutely: Minutely[];
-  hourly: Hourly[];
-  daily: Daily[];
+  weather: {
+    id: number;
+    main: string;
+    description: string;
+    icon: string;
+  }[];
+  clouds: {
+    all: number;
+  };
+  wind: {
+    speed: number;
+    deg: number;
+    gust: number;
+  };
+  visibility: number;
+  pop: number;
+  rain?: {
+    '3h': number;
+  };
+  sys: {
+    pod: string;
+  };
+  dt_txt: string;
 }
 
 export default function Home() {
@@ -101,13 +68,13 @@ export default function Home() {
     'repoData',
     async () => {
       const { data } = await axios.get(
-        `https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`
+        `https://api.openweathermap.org/data/2.5/forecast?q=bogota&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`
       );
       return data;
     }
   );
 
-  console.log('data', data?.timezone);
+  const firstData = data?.list[0];
 
   if (isLoading)
     return (
@@ -123,7 +90,9 @@ export default function Home() {
         {/* Today Data */}
         <section>
           <div>
-            <h2 className="flex gap-1 text-2xl items-end"></h2>
+            <h2 className="flex gap-1 text-2xl items-end">
+              <p>{format(parseISO(firstData?.dt_txt ?? ''), 'EEEE')}</p>
+            </h2>
           </div>
         </section>
         {/* 7 Day Forecast Data */}
