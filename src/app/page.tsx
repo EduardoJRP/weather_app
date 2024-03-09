@@ -76,6 +76,8 @@ export default function Home() {
 
   const firstData = data?.list[0];
 
+  console.log('data', data);
+
   if (isLoading)
     return (
       <div className="flex items-center min-h-screen justify-center">
@@ -92,6 +94,9 @@ export default function Home() {
           <div>
             <h2 className="flex gap-1 text-2xl items-end">
               <p>{format(parseISO(firstData?.dt_txt ?? ''), 'EEEE')}</p>
+              <p className="text-lg">
+                ({format(parseISO(firstData?.dt_txt ?? ''), 'dd.MM.yyyy')})
+              </p>
             </h2>
           </div>
         </section>
