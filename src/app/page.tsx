@@ -1,5 +1,6 @@
 'use client';
 
+import Container from '@/components/Container';
 import Navbar from '@/components/Navbar';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
@@ -98,6 +99,7 @@ export default function Home() {
                 ({format(parseISO(firstData?.dt_txt ?? ''), 'dd.MM.yyyy')})
               </p>
             </h2>
+            <Container className=""></Container>
           </div>
         </section>
         {/* 7 Day Forecast Data */}
