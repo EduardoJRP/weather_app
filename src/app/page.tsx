@@ -2,6 +2,7 @@
 
 import Container from '@/components/Container';
 import Navbar from '@/components/Navbar';
+import { kelvinToCelsius } from '@/utils/kelvinToCelsius';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
 import { useQuery } from 'react-query';
@@ -91,15 +92,39 @@ export default function Home() {
       <Navbar />
       <main className="px-3 max-w-7xl mx-auto flex flex-col gap-9 w-full pb-10 pt-4">
         {/* Today Data */}
-        <section>
-          <div>
+        <section className="space-y-4">
+          <div className="space-y-2">
             <h2 className="flex gap-1 text-2xl items-end">
               <p>{format(parseISO(firstData?.dt_txt ?? ''), 'EEEE')}</p>
               <p className="text-lg">
                 ({format(parseISO(firstData?.dt_txt ?? ''), 'dd.MM.yyyy')})
               </p>
             </h2>
-            <Container className=""></Container>
+            <Container className="gap-10 px-6 items-center">
+              {/* temperature */}
+              <div className="flex flex-col px-4">
+                <span className="text-5xl">
+                  {kelvinToCelsius(firstData?.main.temp ?? 0)}°
+                </span>
+                <p className="text-xs space-x-1 whitespace-nowrap">
+                  <span>Feels Like</span>
+                  <span>
+                    {kelvinToCelsius(firstData?.main.feels_like ?? 0)}°
+                  </span>
+                </p>
+                <p className="text-xs space-x-2">
+                  <span>
+                    {kelvinToCelsius(firstData?.main.temp_min ?? 0)}
+                    °↓{''}
+                  </span>
+                  <span>
+                    {kelvinToCelsius(firstData?.main.temp_max ?? 0)}°↑
+                  </span>
+                </p>
+              </div>
+              {/* time and weather icon*/}
+              <div></div>
+            </Container>
           </div>
         </section>
         {/* 7 Day Forecast Data */}
