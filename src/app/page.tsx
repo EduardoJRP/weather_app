@@ -132,6 +132,8 @@ export default function Home() {
                     <p className="whitespace-nowrap">
                       {format(parseISO(data.dt_txt), 'h:mm a')}
                     </p>
+
+                    <WeatherIcon iconName={data.weather[0].icon} />
                     <p>{kelvinToCelsius(data?.main.temp ?? 0)}°</p>
                   </div>
                 ))}
