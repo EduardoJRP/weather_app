@@ -2,6 +2,7 @@
 
 import Container from '@/components/Container';
 import Navbar from '@/components/Navbar';
+import WeatherIcon from '@/components/WeatherIcon';
 import { kelvinToCelsius } from '@/utils/kelvinToCelsius';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
