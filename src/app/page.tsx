@@ -3,6 +3,7 @@
 import Container from '@/components/Container';
 import Navbar from '@/components/Navbar';
 import WeatherIcon from '@/components/WeatherIcon';
+import { getDayOrNightIcon } from '@/utils/getDayOrNightIcon';
 import { kelvinToCelsius } from '@/utils/kelvinToCelsius';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
@@ -134,7 +135,12 @@ export default function Home() {
                       {format(parseISO(data.dt_txt), 'h:mm a')}
                     </p>
 
-                    <WeatherIcon iconName={data.weather[0].icon} />
+                    <WeatherIcon
+                      iconName={getDayOrNightIcon(
+                        data.weather[0].icon,
+                        data.dt_txt
+                      )}
+                    />
                     <p>{kelvinToCelsius(data?.main.temp ?? 0)}°</p>
                   </div>
                 ))}
@@ -143,7 +149,9 @@ export default function Home() {
           </div>
         </section>
         {/* 7 Day Forecast Data */}
-        <section></section>
+        <section>
+          <p></p>
+        </section>
       </main>
     </div>
   );
