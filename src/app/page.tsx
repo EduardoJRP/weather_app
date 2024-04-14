@@ -4,6 +4,7 @@ import Container from '@/components/Container';
 import Navbar from '@/components/Navbar';
 import WeatherDetails from '@/components/WeatherDetails';
 import WeatherIcon from '@/components/WeatherIcon';
+import { convertWindSpeed } from '@/utils/convertWindSpeed';
 import { getDayOrNightIcon } from '@/utils/getDayOrNightIcon';
 import { kelvinToCelsius } from '@/utils/kelvinToCelsius';
 import { metersToKilometers } from '@/utils/metersToKilometers';
@@ -166,7 +167,7 @@ export default function Home() {
               <WeatherDetails
                 visibility={metersToKilometers(firstData.visibility ?? 10000)}
                 humidity={`${firstData?.main.humidity}%`}
-                windSpeed={''}
+                windSpeed={convertWindSpeed(firstData?.wind.speed ?? 1.64)}
                 airPressure={`${firstData?.main.pressure} hPa`}
                 sunrise={format(
                   fromUnixTime(data?.city.sunrise ?? 17029249452),
