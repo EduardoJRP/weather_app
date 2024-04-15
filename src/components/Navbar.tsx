@@ -28,7 +28,7 @@ export default function Navbar() {
           <div>
             <SearchBox
               value={city}
-              onChange={handleInputChange(e.target.value)}
+              onChange={(e) => handleInputChange(e.target.value)}
               onSubmit={undefined}
             />
           </div>
