@@ -1,7 +1,12 @@
+'use client';
+
 import React, { useState } from 'react';
 import { FaLocationArrow, FaSun } from 'react-icons/fa';
 import { FaLocationDot } from 'react-icons/fa6';
 import SearchBox from './SearchBox';
+import axios from 'axios';
+
+const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY;
 
 export default function Navbar() {
   const [city, setCity] = useState('');
@@ -11,6 +16,29 @@ export default function Navbar() {
 
   async function handleInputChange(value: string) {
     setCity(value);
+    if (value.length >= 3) {
+      try {
+        const response = await axios.get(
+          `https://api.openweathermap.org/data/2.5/find?q=${value}&appid=${API_KEY}`
+        );
+
+        const suggestions = response.data.list.map((item: any) => item.name);
+        setSuggestions(suggestions);
+        setError('');
+        setShowSuggestions(true);
+      } catch (error) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }
+
+  function handleSuggestionClick(value: string) {
+    setCity(value);
+    setShowSuggestions(false);
   }
 
   return (
@@ -25,15 +53,58 @@ export default function Navbar() {
           <FaLocationDot className="text-2xl text-gray-400 hover:opacity-80 cursor-pointer" />
           <FaLocationArrow className="text-2xl" />
           <p className="text-slate-900/80 text-sm">Colombia</p>
-          <div>
+          <div className="relative">
             <SearchBox
               value={city}
               onChange={(e) => handleInputChange(e.target.value)}
               onSubmit={undefined}
             />
+            <SuggestionsBox
+              {...{
+                showSuggestions,
+                suggestions,
+                handleSuggestionClick,
+                error,
+              }}
+            />
           </div>
         </section>
       </div>
     </nav>
+  );
+}
+
+function SuggestionsBox({
+  showSuggestions,
+  suggestions,
+  handleSuggestionClick,
+  error,
+}: {
+  showSuggestions: boolean;
+  suggestions: string[];
+  handleSuggestionClick: (item: string) => void;
+  error: string;
+}) {
+  return (
+    <>
+      {((showSuggestions && suggestions.length > 1) || error) && (
+        <ul className="mb-4 bg-white absolute border top-[44px] left-0 border-gray-300 rounded-md min-w-[200px] flex flex-col gap-1 py-2 px-2">
+          {error && suggestions.length < 1 && (
+            <li className="cursor-pointer p-1 rounded hover:bg-gray-200">
+              {error}
+            </li>
+          )}
+          {suggestions.map((data, index) => (
+            <li
+              key={index}
+              onClick={() => handleSuggestionClick(data)}
+              className="cursor-pointer p-1 rounded hover:bg-gray-200"
+            >
+              {data}
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
