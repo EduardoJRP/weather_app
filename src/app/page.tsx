@@ -1,6 +1,7 @@
 'use client';
 
 import Container from '@/components/Container';
+import ForecastWeatheDetail from '@/components/ForecastWeatheDetail';
 import Navbar from '@/components/Navbar';
 import WeatherDetails from '@/components/WeatherDetails';
 import WeatherIcon from '@/components/WeatherIcon';
@@ -84,6 +85,23 @@ export default function Home() {
   const firstData = data?.list[0];
 
   console.log('data', data);
+
+  const uniqueDates = [
+    ...new Set(
+      data?.list.map(
+        (entry) => new Date(entry.dt * 1000).toISOString().split('T')[0]
+      )
+    ),
+  ];
+
+  // Filtering data to get the first entry after 6 AM for each unique date
+  const firstDataForEachDate = uniqueDates.map((date) => {
+    return data?.list.find((entry) => {
+      const entryDate = new Date(entry.dt * 1000).toISOString().split('T')[0];
+      const entryTime = new Date(entry.dt * 1000).getHours();
+      return entryDate === date && entryTime >= 6;
+    });
+  });
 
   if (isLoading)
     return (
@@ -185,6 +203,7 @@ export default function Home() {
         {/* 7 Day Forecast Data */}
         <section className="flex w-full flex-col gap-4">
           <p className="text-2xl">Forecast (7 Days)</p>
+          <ForecastWeatheDetail />
         </section>
       </main>
     </div>
