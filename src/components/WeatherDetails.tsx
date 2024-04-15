@@ -19,8 +19,8 @@ export default function WeatherDetails(props: WeatherDetailProps) {
     humidity = '61%',
     windSpeed = '7 km/h',
     airPressure = '1012 hPa',
-    sunrise = '6:20',
-    sunset = '18:48',
+    sunrise,
+    sunset,
   } = props;
 
   return (
