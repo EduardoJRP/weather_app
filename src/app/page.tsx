@@ -11,7 +11,10 @@ import { kelvinToCelsius } from '@/utils/kelvinToCelsius';
 import { metersToKilometers } from '@/utils/metersToKilometers';
 import axios from 'axios';
 import { parseISO, format, fromUnixTime } from 'date-fns';
+import { useAtom } from 'jotai';
 import { useQuery } from 'react-query';
+import { placeAtom } from './atom';
+import { useEffect } from 'react';
 
 interface WeatherData {
   cod: string;
@@ -72,15 +75,21 @@ interface WeatherItem {
 }
 
 export default function Home() {
-  const { isLoading, error, data } = useQuery<WeatherData>(
+  const [place, setPlace] = useAtom(placeAtom);
+
+  const { isLoading, error, data, refetch } = useQuery<WeatherData>(
     'repoData',
     async () => {
       const { data } = await axios.get(
-        `https://api.openweathermap.org/data/2.5/forecast?q=bogota&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}`
       );
       return data;
     }
   );
+
+  useEffect(() => {
+    refetch();
+  }, [place, refetch]);
 
   const firstData = data?.list[0];
 

@@ -5,6 +5,8 @@ import { FaLocationArrow, FaSun } from 'react-icons/fa';
 import { FaLocationDot } from 'react-icons/fa6';
 import SearchBox from './SearchBox';
 import axios from 'axios';
+import { placeAtom } from '@/app/atom';
+import { useAtom } from 'jotai';
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY;
 
@@ -13,6 +15,8 @@ export default function Navbar() {
   const [error, setError] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const [place, setPlace] = useAtom(placeAtom);
 
   async function handleInputChange(value: string) {
     setCity(value);
@@ -41,6 +45,17 @@ export default function Navbar() {
     setShowSuggestions(false);
   }
 
+  function handleSubmitSearch(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (suggestions.length == 0) {
+      setError('Location not found');
+    } else {
+      setError('');
+      setPlace(city);
+      setShowSuggestions(false);
+    }
+  }
+
   return (
     <nav className="shadow-sm sticky top-0 left-0 z-50 bg-white">
       <div className="h-[80px] w-full flex justify-between items-center max-w-7xl px-3 mx-auto">
@@ -57,7 +72,7 @@ export default function Navbar() {
             <SearchBox
               value={city}
               onChange={(e) => handleInputChange(e.target.value)}
-              onSubmit={undefined}
+              onSubmit={handleSubmitSearch}
             />
             <SuggestionsBox
               {...{
