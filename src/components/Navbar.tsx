@@ -5,18 +5,21 @@ import { FaLocationArrow, FaSun } from 'react-icons/fa';
 import { FaLocationDot } from 'react-icons/fa6';
 import SearchBox from './SearchBox';
 import axios from 'axios';
-import { placeAtom } from '@/app/atom';
+import { loadingCityAtom, placeAtom } from '@/app/atom';
 import { useAtom } from 'jotai';
+
+type Props = { location?: string };
 
 const API_KEY = process.env.NEXT_PUBLIC_WEATHER_KEY;
 
-export default function Navbar() {
+export default function Navbar({ location }: Props) {
   const [city, setCity] = useState('');
   const [error, setError] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [place, setPlace] = useAtom(placeAtom);
+  const [loadingCity, setLoadingCity] = useAtom(loadingCityAtom);
 
   async function handleInputChange(value: string) {
     setCity(value);
@@ -46,13 +49,18 @@ export default function Navbar() {
   }
 
   function handleSubmitSearch(e: React.FormEvent<HTMLFormElement>) {
+    setLoadingCity(true);
     e.preventDefault();
     if (suggestions.length == 0) {
       setError('Location not found');
+      setLoadingCity(false);
     } else {
       setError('');
-      setPlace(city);
-      setShowSuggestions(false);
+      setTimeout(() => {
+        setLoadingCity(false);
+        setPlace(city);
+        setShowSuggestions(false);
+      }, 500);
     }
   }
 
@@ -67,7 +75,7 @@ export default function Navbar() {
         <section className="flex gap-2 items-center">
           <FaLocationDot className="text-2xl text-gray-400 hover:opacity-80 cursor-pointer" />
           <FaLocationArrow className="text-2xl" />
-          <p className="text-slate-900/80 text-sm">Colombia</p>
+          <p className="text-slate-900/80 text-sm">{location}</p>
           <div className="relative">
             <SearchBox
               value={city}
