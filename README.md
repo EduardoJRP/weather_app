@@ -9,3 +9,17 @@ This project utilizes the openweathermap.org API to manage and display daily wea
 - Location-Based: Easily switch between different locations to check the weather anywhere in the world, providing users with personalized weather updates based on their preferences.
 - User-Friendly Interface: The project features a user-friendly interface that makes it easy for users to navigate and access weather information quickly and efficiently.
 - Customization Options: Users can customize their experience by selecting preferred units of measurement (e.g., Celsius or Fahrenheit) and display settings to tailor the weather data to their preferences.
+
+## How to install it and run it?
+
+Press the following command
+
+```cmd
+npm install
+```
+
+And you can follow up with the following command
+
+```cmd
+npm run dev
+```
